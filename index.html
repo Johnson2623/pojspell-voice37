@@ -115,7 +115,7 @@ const w=[s.weird&&'Weirdness '+s.weird,s.infl&&'Style Influence '+s.infl].filter
 const ai=`請以「${T('title')||'(主題)'}」為主題,用${s.lang?zo(s.lang):'國語'}寫一首${A('genre').map(zo).join('/')||'流行'}歌曲歌詞。情緒:${A('mood').map(zo).join('、')||'自然'}。內容/關鍵詞:${T('story')||'(自由發揮)'}。結構依序為:${secs.map(zo).join(' → ')}。請用 [Verse]、[Chorus] 等 Suno meta tags 標示段落,每行 6–12 字、副歌押韻好記,並只輸出歌詞。`;
 const aiE=`Write the lyrics of a ${A('genre').join('/')||'pop'} song titled "${T('title')||'(topic)'}" in ${s.lang||'Mandarin'}. Mood: ${A('mood').join(', ')||'natural'}. Story/keywords: ${T('story')||'(free choice)'}. Song structure in order: ${secs.join(' → ')}. Label each section with Suno meta tags such as [Verse] and [Chorus], keep lines around 6–12 syllables, make the chorus rhyme and be easy to remember, and output the lyrics only.`;
 return {title:T('title'),st,stZ,ly:ly.join('\n'),lz:lz.join('\n'),ex:T('excl'),w,ai,aiE}}
-const TB={lb:['o6'],mb:['o2','o3'],la:['o2'],ma:['o2','o3']},LG={},TC={},PD={};
+const TB={lb:['o2','o6'],mb:['o2','o3'],la:['o2','o6'],ma:['o2','o3']},LG={},TC={},PD={};
 const hasZh=t=>/[\u4e00-\u9fff]/.test(t);
 function box(id,t,txt,lim,note,btns){const n=txt.length;return `<div class="ob"><div class="oh">${t}<span>${note||''}</span>${lim?`<span class="${n>lim?'bad':''}" style="margin:0 10px 0 0">${n}/${lim}</span>`:''}${btns||''}<button class="btn s" data-c="${id}">複製</button></div><textarea id="${id}" readonly>${esc(txt)}</textarea></div>`}
 function tbox(id,t,zh,en,lim,note){if(!(TB[m]||[]).includes(id))return box(id,t,en,lim,note);
