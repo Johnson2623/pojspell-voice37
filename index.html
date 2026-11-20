@@ -57,7 +57,7 @@ mood:{t:'m',l:'情緒氛圍',o:MOOD},
 tempo:{t:'s',l:'節奏速度',o:'慢板|slow tempo,中速|mid-tempo,快板|upbeat fast tempo'},
 bpm:{t:'x',l:'BPM',ph:'例:92'},
 key:{t:'d',l:'調性',o:'C major,G major,D major,A minor,E minor,D minor,F major,B♭ major'},
-vocal:{t:'s',l:'人聲類型',o:'男聲|male vocal,女聲|female vocal,男女對唱|male and female duet,合唱團|choir,中性嗓音|androgynous vocal,說唱|rapper vocal'},
+vocal:{t:'s',l:'人聲類型',o:'男聲|male vocal,女聲|female vocal,男女對唱|male and female duet,合唱團|choir,中性嗓音|androgynous vocal,說唱|rapper vocal,福音詩班|gospel choir vocals,敬拜領唱|worship leader vocal,靈魂福音女聲|soulful gospel female vocal,福音男中音|gospel baritone vocal'},
 vtone:{t:'m',l:'音色質感',o:'溫暖|warm,沙啞|raspy,空靈|airy,磁性|smooth,高亢|powerful belting,氣音|breathy'},
 vfx:{t:'m',l:'人聲處理',o:'疊加和聲|layered harmonies,自動調音|auto-tune,殘響|reverb-drenched vocals,Rap 段落|rap verse,即興裝飾音|vocal ad-libs,人聲切片|chopped vocal samples'},
 inst:{t:'m',l:'主要樂器',o:INST},
@@ -81,9 +81,12 @@ const shuffle=k=>shuf(L2(k)).slice(0,(m=='la'&&k=='genre'||m=='ma')?16:N[k]);
 F.vocalL={t:'s',l:'人聲類型',h:'10 種',o:'男聲|male vocal,女聲|female vocal,男女對唱|male and female duet,合唱團|choir,童聲|child vocal,少年音|youthful male vocal,低沉男聲|deep baritone vocal,甜美女聲|sweet female vocal,中性嗓音|androgynous vocal,說唱|rapper vocal'};
 F.instL={t:'m',l:'主要樂器',h:'20 種',o:'鋼琴|piano,木吉他|acoustic guitar,電吉他|electric guitar,貝斯|bass,鼓組|drums,弦樂|strings,合成器|synth,薩克斯風|saxophone,小提琴|violin,二胡|erhu,古箏|guzheng,笛子|bamboo flute,大提琴|cello,小號|trumpet,烏克麗麗|ukulele,口琴|harmonica,電子琴|keyboard organ,豎琴|harp,手鼓|hand percussion,鐵琴|glockenspiel'};
 F.tplL={t:'s',l:'歌曲結構',h:'5 種',o:'簡單|Intro/Verse/Chorus/Verse/Chorus/Outro,含橋段|Intro/Verse/Chorus/Verse/Chorus/Bridge/Chorus/Outro,極簡|Verse/Chorus/Verse/Chorus,導歌版|Intro/Verse/Pre-Chorus/Chorus/Verse/Pre-Chorus/Chorus/Outro,完整流行|Intro/Verse/Pre-Chorus/Chorus/Verse/Pre-Chorus/Chorus/Bridge/Final Chorus/Outro'};
+const GG="詩歌敬拜|Worship Song,當代基督教音樂|Contemporary Christian Music,敬拜讚美|Praise and Worship,黑人靈歌|Negro Spiritual,傳統聖詩|Traditional Hymn,現代聖詩|Modern Hymn,福音搖滾|Christian Rock,福音嘻哈|Christian Hip-Hop,福音流行|Gospel Pop,南方福音|Southern Gospel,都會福音|Urban Contemporary Gospel,福音爵士|Gospel Jazz,福音鄉村|Country Gospel,福音 R&B|Gospel R&B,福音電子|Christian EDM,聖誕詩歌|Christmas Carol,復活節聖樂|Easter Hymn,神聖合唱|Sacred Choral,靈修氛圍|Devotional Ambient,兒童主日學歌曲|Sunday School Song",GMOOD="敬拜|worshipful,虔誠|reverent,感恩|thankful,平安|peace-filled,盼望|full of hope,信靠|trusting,得勝|victorious,喜樂|rejoicing,屬靈|spiritual,聖潔|holy,禱告|prayerful,憐憫|compassionate,悔改|repentant,蒙救贖|redeemed,恩典|gracious,安慰|consoling,火熱|fervent,榮耀|glorious,讚頌|exalting,順服|surrendered";
+DX.la.title.push(...["奇異恩典", "我心靈得安寧", "耶穌愛我", "讚美之泉", "主是我的牧者", "祢是我的力量", "十字架的愛", "感恩的心", "榮耀歸於祢", "在恩典中前行", "平安夜的光", "哈利路亞", "我的磐石", "祢的慈愛長存", "全心敬拜", "以馬內利", "與主同行", "永不止息的愛", "天父的懷抱", "復活的盼望"]);DX.la.story.push(...["在十字架前的悔改與饒恕", "感謝天父的日日供應", "迷失的羊被牧人尋回", "在試煉中仍然信靠", "禱告中得到的平安", "耶穌平靜風浪", "浪子回頭的父親擁抱", "復活晨曦的盼望", "聖誕夜伯利恆的馬槽", "教會裡全體合唱敬拜", "病痛中的安慰與醫治", "喪親後的永生盼望", "放下重擔交託主", "為遠方的家人禱告", "領受恩典的感動", "在曠野中的跟隨", "詩篇二十三篇的牧者意象", "傳揚福音的使命", "弟兄姊妹同心合一", "將榮耀歸給神"]);DX.la.genre=D.genre.concat(O(GG));DM.title.push(...["敬拜前奏", "安靜等候", "聖殿之光", "恩典河流", "平安夜鋼琴", "禱告時刻", "十字架下的默想", "晨更靈修", "詩歌間奏", "感恩獻上", "榮耀的呼召", "復活晨曦", "牧者的杖", "伯利恆之星", "天堂之門", "聖靈如風", "安息主懷", "詩篇默想曲", "和平之君", "神的同在"]);DM.story.push(...["主日崇拜前奏", "晨更靈修背景音樂", "禱告時的安靜配樂", "聖餐儀式的默想", "洗禮典禮", "婚禮的祝福時刻", "聖誕夜燭光晚會", "復活節清晨的敬拜", "教會詩班暖場", "小組團契的靈修", "病房中的安慰", "追思禮拜的盼望", "查經前的預備", "青年營會敬拜", "默想詩篇", "領受恩典的感動", "浪子回頭的畫面", "牧人與羊群", "風浪平靜的海面", "十字架前的安靜"]);
+DX.ma.title.push(...["聖壇前的寂靜", "恩典序曲", "榮耀頌讚前奏", "十架默想曲", "橄欖山的黃昏", "加利利海風", "詩篇二十三變奏曲", "聖靈降臨", "彌賽亞的黎明", "各各他之後", "耶路撒冷晨光", "伯利恆夜曲", "天使報佳音序曲", "約旦河畔", "曠野呼聲", "磐石之上", "生命之糧", "活水江河", "新天新地", "永恆的讚美"]);DX.ma.genre.push(...O(GG));DX.ma.story=DM.story.slice(0,200).concat(["教會崇拜的聖樂序曲", "神學院晨禱", "修道院的靜默", "聖誕彌撒的燭光", "受難週的默想", "復活主日的歡慶", "聖靈降臨節的火焰", "安息日的午後", "聖經故事旁白配樂", "詩班獻詩伴奏", "青年敬拜夜", "福音電影配樂", "教會佈道會", "海外宣教的旅程", "小教堂的鐘聲", "鄉村禮拜堂的清晨", "默禱之夜", "迦南地的遠眺", "約櫃入城的遊行", "新年感恩禮拜"]);
 const ZH={};const addZ=l=>l.forEach(o=>{if(o[1]&&!ZH[o[1]])ZH[o[1]]=o[0]});
 Object.values(F).forEach(f=>{if(f.o)(typeof f.o=='string'?[f.o]:Object.values(f.o)).forEach(s=>addZ(O(s)))});
-addZ(D.genre);addZ(D.mood);addZ(DX.ma.genre);ZH['Verse']='主歌';
+addZ(D.genre);addZ(D.mood);addZ(DX.ma.genre);addZ(O(GG));addZ(O(GMOOD));ZH['Verse']='主歌';
 const zo=e=>ZH[e]||(e=='instrumental'?'純音樂':(/^sung in (.+)$/.test(e)?'以'+zo(e.slice(8))+'演唱':e));
 const S=(n,d,f)=>({n,d,f});
 const M={
@@ -94,7 +97,7 @@ ma:{n:'僅音樂高階',s:[S('構想','主題與畫面。',['title','story']),S(
 const St={lb:{},mb:{},la:{},ma:{}};let m='lb',p=0;
 const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function chip(k,[z,e],on){return `<button class="chip${on?' on':''}" data-k="${k}" data-v="${esc(e)}">${esc(z)}${e!==z?`<small>${esc(e)}</small>`:''}</button>`}
-function field(k){const f=F[k],v=St[m][k],h=f.h?`<span class="hint">${f.h}</span>`:'';let b='';
+function field(k){const f=((m=='la'||m=='mb'||m=='ma')&&k=='mood')?{...F[k],o:F[k].o+','+GMOOD}:(m=='mb'&&k=='genre')?{...F[k],o:F[k].o+','+GG}:F[k],v=St[m][k],h=f.h?`<span class="hint">${f.h}</span>`:'';let b='';
 if(f.t=='x')b=`<input data-i="${k}" placeholder="${esc(f.ph||'')}" value="${esc(v||'')}">`;
 else if(f.t=='a')b=`<textarea data-i="${k}" placeholder="${esc(f.ph||'')}">${esc(v||'')}</textarea>`;
 else if(f.t=='d')b=`<select data-i="${k}"><option value="">(不指定)</option>${f.o.split(',').map(o=>`<option${v==o?' selected':''}>${o}</option>`).join('')}</select>`;
