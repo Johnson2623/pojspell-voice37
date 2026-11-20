@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Suno 音樂指令模板</title>
+<style>
+:root{--bg:#141414;--pan:#1b1b1b;--card:#222;--bd:#333;--tx:#f2f2f2;--mu:#8a8a8a;--ac:#ff7a45;--acbg:#3a2a22;--in:#161616;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f1ee;--pan:#fff;--card:#f1ece8;--bd:#ddd5ce;--tx:#222;--mu:#777;--acbg:#ffe8dc;--in:#faf7f5}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;padding:6px 5px 30px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tab{padding:15px 6px;border:1px solid var(--bd);border-radius:10px;background:var(--pan);color:var(--tx);font:600 16px inherit;font-family:inherit;cursor:pointer}
+.tab.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.bar{height:9px;background:var(--card);border-radius:9px;margin:26px 0 20px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);border-radius:9px;transition:width .3s}
+.main{display:grid;grid-template-columns:262px 1fr;gap:18px;align-items:start}
+.side{display:flex;flex-direction:column;gap:7px}
+.si{padding:14px 14px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);text-align:left;font:500 16px inherit;font-family:inherit;cursor:pointer}
+.si.on{border-color:var(--ac);background:var(--acbg)}
+.pan{background:var(--pan);border:1px solid var(--bd);border-radius:14px;padding:20px 20px 24px;min-width:0}
+h2{margin:0 0 4px;font-size:21px}.sub{color:var(--mu);margin:0 0 16px;font-size:14px}
+.lb{display:block;font-weight:700;font-size:14px;margin:16px 0 7px}.hint{color:var(--mu);font-weight:400;font-size:12px;margin-left:6px}
+input,textarea,select{width:100%;background:var(--in);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:13px 14px;font:15px inherit;font-family:inherit}
+input::placeholder,textarea::placeholder{color:var(--mu)}textarea{resize:vertical;min-height:90px}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ac)}
+details{border:1px solid var(--bd);border-radius:12px;background:var(--in);margin-bottom:8px}
+summary{padding:11px 14px;cursor:pointer;font-weight:700;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}details .chips{padding:2px 14px 14px}
+.chip{padding:7px 14px;border-radius:20px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:14px inherit;font-family:inherit;cursor:pointer}
+.chip small{color:var(--mu);margin-left:4px;font-size:12px}
+.chip.on{border-color:var(--ac);background:var(--acbg)}
+.nav{display:flex;gap:10px;margin-top:24px}.btn{padding:11px 20px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:600 14px inherit;font-family:inherit;cursor:pointer}
+.btn.p{background:var(--ac);border-color:var(--ac);color:#fff}.sp{flex:1}
+.ob{border:1px solid var(--bd);border-radius:12px;background:var(--in);margin-bottom:14px;overflow:hidden}
+.oh{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--bd);font-weight:700;font-size:14px}
+.oh span{color:var(--mu);font-weight:400;font-size:12px;margin:0 auto 0 10px}.oh .bad{color:#ff5a5a}
+.ob textarea{border:0;border-radius:0;min-height:70px;background:transparent}
+.btn.s{padding:5px 12px;font-size:13px}
+@media(max-width:760px){.main{grid-template-columns:1fr}.side{flex-direction:row;overflow-x:auto;padding-bottom:4px}.si{white-space:nowrap;padding:11px 14px;font-size:14px}.tab{font-size:13px;padding:13px 2px}.pan{padding:16px 14px}}
+</style></head><body>
+<div class="tabs" id="tabs"></div><div class="bar"><i id="pg"></i></div>
+<div class="main"><div class="side" id="side"></div><div class="pan" id="pan"></div></div>
+<script>
+const O=s=>s.split(',').map(x=>x.split('|'));
+const GEN='流行|Pop,搖滾|Rock,嘻哈|Hip-Hop,R&B|R&B,電子舞曲|EDM,民謠|Folk,爵士|Jazz,Lo-fi|Lo-fi,城市流行|City Pop,韓流|K-Pop,抒情慢歌|Ballad,金屬|Metal,雷鬼|Reggae,鄉村|Country,電影配樂|Cinematic,放克|Funk';
+const MOOD='快樂|happy,感傷|melancholic,浪漫|romantic,熱血|energetic,放鬆|chill,黑暗|dark,懷舊|nostalgic,史詩|epic,夢幻|dreamy,療癒|uplifting';
+const INST='鋼琴|piano,木吉他|acoustic guitar,電吉他|electric guitar,貝斯|bass,鼓組|drums,弦樂|strings,合成器|synth,薩克斯風|saxophone,小提琴|violin,二胡|erhu,古箏|guzheng,笛子|bamboo flute';
+const SEC='前奏|Intro,主歌1|Verse 1,導歌|Pre-Chorus,副歌|Chorus,主歌2|Verse 2,橋段|Bridge,間奏|Instrumental Break,吉他獨奏|Guitar Solo,最終副歌|Final Chorus,尾奏|Outro';
+const PCT='低|20%,中低|35%,中|50%,中高|65%,高|80%';
+const F={
+title:{t:'x',l:'歌名 / 主題',ph:'例:夏夜的星空'},
+story:{t:'a',l:'故事 / 畫面 / 關鍵詞',ph:'例:異地戀的思念、海邊黃昏、重逢的期待'},
+lang:{t:'s',l:'演唱語言',o:'國語|Mandarin,台語|Taiwanese,粵語|Cantonese,英文|English,日文|Japanese,韓文|Korean'},
+genre:{t:'m',l:'主曲風',h:'建議 1–2 個',o:GEN},
+sub:{t:'x',l:'子曲風 / 參考風格',ph:'例:synthwave, dream pop, bossa nova'},
+era:{t:'s',l:'年代感',o:'80年代|1980s,90年代|1990s,2000年代|2000s,現代|modern'},
+mood:{t:'m',l:'情緒氛圍',o:MOOD},
+tempo:{t:'s',l:'節奏速度',o:'慢板|slow tempo,中速|mid-tempo,快板|upbeat fast tempo'},
+bpm:{t:'x',l:'BPM',ph:'例:92'},
+key:{t:'d',l:'調性',o:'C major,G major,D major,A minor,E minor,D minor,F major,B♭ major'},
+vocal:{t:'s',l:'人聲類型',o:'男聲|male vocal,女聲|female vocal,男女對唱|male and female duet,合唱團|choir'},
+vtone:{t:'m',l:'音色質感',o:'溫暖|warm,沙啞|raspy,空靈|airy,磁性|smooth,高亢|powerful belting,氣音|breathy'},
+vfx:{t:'m',l:'人聲處理',o:'疊加和聲|layered harmonies,自動調音|auto-tune,殘響|reverb-drenched vocals,Rap 段落|rap verse'},
+inst:{t:'m',l:'主要樂器',o:INST},
+instA:{t:'m',l:'樂器配置',h:'依類別展開挑選',o:{'節奏組':'鼓組|drums,貝斯|bass,打擊樂|percussion,808 鼓機|808 drums','旋律樂器':'鋼琴|piano,木吉他|acoustic guitar,電吉他|electric guitar,薩克斯風|saxophone,小號|trumpet','弦樂與管樂':'弦樂|strings,小提琴|violin,大提琴|cello,長笛|flute,豎琴|harp','電子音色':'合成器|synth pads,琶音器|arpeggiator,電子貝斯|synth bass,氛圍音效|ambient textures','民族樂器':'二胡|erhu,古箏|guzheng,笛子|bamboo flute,琵琶|pipa,尺八|shakuhachi'}},
+instF:{t:'x',l:'主奏樂器 / 重點',ph:'例:a soaring electric guitar lead'},
+prod:{t:'m',l:'製作與混音質感',o:'乾淨混音|clean mix,低傳真|lo-fi texture,寬廣立體|wide stereo,厚重低頻|heavy bass,現場感|live feel,錄音室質感|studio polished,復古類比|vintage analog warmth'},
+tpl:{t:'s',l:'歌曲結構',o:'簡單|Intro/Verse/Chorus/Verse/Chorus/Outro,含橋段|Intro/Verse/Chorus/Verse/Chorus/Bridge/Chorus/Outro,極簡|Verse/Chorus/Verse/Chorus'},
+secs:{t:'m',l:'段落架構',h:'依點選順序排列',o:SEC},
+notes:{t:'a',l:'各段落指示',h:'每行一段,格式「段落: 描述」',ph:'Intro: soft piano, rain sounds\nChorus: anthemic, layered vocals\nBridge: stripped back, whisper'},
+lyrics:{t:'a',l:'歌詞',h:'段落間空一行,會依序填入主歌/副歌/橋段;留空則產生骨架',ph:'第一段歌詞…\n\n第二段歌詞…'},
+excl:{t:'x',l:'排除風格 Exclude Styles',ph:'例:heavy metal, autotune, screaming'},
+weird:{t:'s',l:'Weirdness 怪異度',h:'越高越實驗',o:PCT},
+infl:{t:'s',l:'Style Influence 風格強度',h:'越高越貼近指令',o:PCT}};
+const S=(n,d,f)=>({n,d,f});
+const M={
+lb:{n:'含歌詞初階',s:[S('構想','先決定歌名、語言與想說的故事。',['title','lang','story']),S('曲風情緒','選擇曲風、情緒與速度。',['genre','mood','tempo']),S('人聲樂器','決定誰唱、用什麼樂器。',['vocal','inst']),S('歌詞結構','貼上歌詞或使用骨架。',['tpl','lyrics']),S('輸出','複製到 Suno 對應欄位。',[])]},
+mb:{n:'僅音樂初階',s:[S('構想','描述這首純音樂的用途與畫面。',['title','story']),S('曲風情緒','選擇曲風、情緒與速度。',['genre','mood','tempo']),S('樂器質感','挑選樂器與整體質感。',['inst','prod']),S('結構','選擇曲式。',['tpl']),S('輸出','複製到 Suno 對應欄位。',[])]},
+la:{n:'含歌詞高階',s:[S('構想','主題、語言與敘事。',['title','lang','story']),S('曲風架構','精準定義曲風、年代、速度與調性。',['genre','sub','era','mood','tempo','bpm','key']),S('人聲設計','人聲類型、音色與處理。',['vocal','vtone','vfx']),S('樂器製作','樂器分類與混音質感。',['instA','instF','prod']),S('段落歌詞','自訂段落、每段指示與歌詞。',['secs','notes','lyrics']),S('排除參數','排除風格與滑桿建議。',['excl','weird','infl']),S('輸出','複製到 Suno 對應欄位。',[])]},
+ma:{n:'僅音樂高階',s:[S('構想','主題與畫面。',['title','story']),S('曲風架構','精準定義曲風、年代、速度與調性。',['genre','sub','era','mood','tempo','bpm','key']),S('樂器分層','樂器與主奏重點。',['instA','instF']),S('段落編排','自訂每段的編曲指示。',['secs','notes']),S('混音製作','整體製作質感。',['prod']),S('排除參數','排除風格與滑桿建議。',['excl','weird','infl']),S('輸出','複製到 Suno 對應欄位。',[])]}};
+const St={lb:{},mb:{},la:{},ma:{}};let m='lb',p=0;
+const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function chip(k,[z,e],on){return `<button class="chip${on?' on':''}" data-k="${k}" data-v="${esc(e)}">${esc(z)}${e!==z?`<small>${esc(e)}</small>`:''}</button>`}
+function field(k){const f=F[k],v=St[m][k],h=f.h?`<span class="hint">${f.h}</span>`:'';let b='';
+if(f.t=='x')b=`<input data-i="${k}" placeholder="${esc(f.ph||'')}" value="${esc(v||'')}">`;
+else if(f.t=='a')b=`<textarea data-i="${k}" placeholder="${esc(f.ph||'')}">${esc(v||'')}</textarea>`;
+else if(f.t=='d')b=`<select data-i="${k}"><option value="">(不指定)</option>${f.o.split(',').map(o=>`<option${v==o?' selected':''}>${o}</option>`).join('')}</select>`;
+else{const on=e=>f.t=='m'?(v||[]).includes(e):v==e;
+if(typeof f.o=='string')b=`<div class="chips">${O(f.o).map(o=>chip(k,o,on(o[1]))).join('')}</div>`;
+else b=Object.entries(f.o).map(([g,o])=>`<details open><summary>▾ ${g}</summary><div class="chips">${O(o).map(x=>chip(k,x,on(x[1]))).join('')}</div></details>`).join('')}
+return `<label class="lb">${f.l}${h}</label>${b}`}
+function build(){const s=St[m],mu=m[0]=='m',adv=m[1]=='a',A=k=>s[k]||[],T=k=>(s[k]||'').trim();
+const st=[mu?['instrumental']:[],A('genre'),T('sub'),s.era||'',A('mood'),s.tempo||'',T('bpm')?T('bpm')+' BPM':'',s.key||'',!mu&&s.lang?'sung in '+s.lang:'',s.vocal||'',A('vtone'),A('vfx'),A('inst'),A('instA'),T('instF'),A('prod')].flat().filter(Boolean).join(', ');
+const secs=adv?A('secs'):(s.tpl||'Intro/Verse/Chorus/Verse/Chorus/Outro').split('/');
+const nm={};T('notes').split('\n').forEach(l=>{const i=l.search(/[:：]/);if(i>0)nm[l.slice(0,i).trim().toLowerCase()]=l.slice(i+1).trim()});
+const paras=T('lyrics').split(/\n\s*\n/).filter(Boolean);let pi=0;
+let ly=mu?['[Instrumental]']:[];
+secs.forEach(x=>{const n=nm[x.toLowerCase()]||nm[x.toLowerCase().replace(/ \d+$/,'')]||'';ly.push(`[${x}${n?': '+n:''}]`);
+if(!mu&&/Verse|Chorus|Bridge/i.test(x))ly.push(pi<paras.length?paras[pi++]:'(在此填入歌詞)')});
+if(!mu)while(pi<paras.length)ly.push(paras[pi++]);
+const w=[s.weird&&'Weirdness '+s.weird,s.infl&&'Style Influence '+s.infl].filter(Boolean).join(' · ');
+const ai=`請以「${T('title')||'(主題)'}」為主題,用${s.lang||'國語'}寫一首${A('genre').join('/')||'流行'}歌曲歌詞。情緒:${A('mood').join('、')||'自然'}。內容/關鍵詞:${T('story')||'(自由發揮)'}。結構依序為:${secs.join(' → ')}。請用 [Verse]、[Chorus] 等 Suno meta tags 標示段落,每行 6–12 字、副歌押韻好記,並只輸出歌詞。`;
+return {title:T('title'),st,ly:ly.join('\n'),ex:T('excl'),w,ai}}
+function box(id,t,txt,lim,note){const n=txt.length;return `<div class="ob"><div class="oh">${t}<span>${note||''}</span>${lim?`<span class="${n>lim?'bad':''}" style="margin:0 10px 0 0">${n}/${lim}</span>`:''}<button class="btn s" data-c="${id}">複製</button></div><textarea id="${id}" readonly>${esc(txt)}</textarea></div>`}
+function output(){const o=build(),mu=m[0]=='m';
+return box('o1','歌名 Song Title',o.title)+box('o2','風格 Style of Music',o.st,1000,'v4.5+ 上限 1000 字元')+box('o3',mu?'結構標籤 Lyrics(純音樂請開啟 Instrumental)':'歌詞 Lyrics',o.ly)+(o.ex?box('o4','排除風格 Exclude Styles',o.ex):'')+(o.w?box('o5','滑桿建議 Sliders',o.w):'')+(mu?'':box('o6','請 AI 代寫歌詞的指令',o.ai,0,'貼給 Claude 等 AI'))}
+function render(){const M_=M[m],s=M_.s[p];
+$('tabs').innerHTML=Object.entries(M).map(([k,v])=>`<button class="tab${k==m?' on':''}" data-m="${k}">${v.n}</button>`).join('');
+$('pg').style.width=((p+1)/M_.s.length*100)+'%';
+$('side').innerHTML=M_.s.map((x,i)=>`<button class="si${i==p?' on':''}" data-p="${i}">${i+1} ${x.n}</button>`).join('');
+const last=p==M_.s.length-1;
+$('pan').innerHTML=`<h2>${p+1} ${s.n}</h2><p class="sub">${s.d}</p>${last?output():s.f.map(field).join('')}<div class="nav">${p?'<button class="btn" data-go="-1">← 上一步</button>':''}<span class="sp"></span><button class="btn" data-reset="1">重設</button>${last?'':'<button class="btn p" data-go="1">下一步 →</button>'}</div>`}
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+if(d.m){m=d.m;p=0}else if(d.p)p=+d.p;else if(d.go)p+=+d.go;
+else if(d.reset){if(!confirm('清除此模式所有內容?'))return;St[m]={}}
+else if(d.k){const f=F[d.k],S_=St[m];if(f.t=='m'){const a=S_[d.k]||[],i=a.indexOf(d.v);i<0?a.push(d.v):a.splice(i,1);S_[d.k]=a}else S_[d.k]=S_[d.k]==d.v?'':d.v}
+else if(d.c){const x=$(d.c);x.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}try{navigator.clipboard.writeText(x.value);ok=true}catch(_){}
+t.textContent=ok?'已複製 ✓':'請手動複製';setTimeout(()=>t.textContent='複製',1400);return}
+else return;render();scrollTo(0,0)});
+document.addEventListener('input',e=>{const k=e.target.dataset.i;if(k)St[m][k]=e.target.value});
+render();
+</script></body></html>
