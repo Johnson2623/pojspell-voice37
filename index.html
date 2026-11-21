@@ -105,8 +105,8 @@ else if(f.t=='d')b=`<select data-i="${k}"><option value="">(不指定)</option>$
 else{const on=e=>f.t=='m'?(v||[]).includes(e):v==e;
 if((m=='lb'||(m=='la'||m=='ma')&&k=='genre')&&L2(k)&&Array.isArray(L2(k)[0])){const sel=L2(k).filter(o=>on(o[1]));if(!R[k])R[k]=shuffle(k);b=`<div class="chips">${[...sel,...R[k].filter(o=>!sel.some(x=>x[1]==o[1]))].map(o=>chip(k,o,on(o[1]))).join('')}<button class="chip" data-sk="${k}" data-rr="1">🎲 換一批 (共 ${L2(k).length} 種)</button></div>`}else if(typeof f.o=='string')b=`<div class="chips">${O(f.o).map(o=>chip(k,o,on(o[1]))).join('')}</div>`;
 else b=Object.entries(f.o).map(([g,o])=>`<details open><summary>▾ ${g}</summary><div class="chips">${O(o).map(x=>chip(k,x,on(x[1]))).join('')}</div></details>`).join('')}
-return `<label class="lb">${f.l}${h}</label>${b}${sug(k)}`}
-function build(){const s=St[m],mu=m[0]=='m',adv=m[1]=='a',A=k=>s[k]||[],T=k=>(s[k]||'').trim();
+return `<label class="lb">${f.l}${h}</label>${b}${sug(k)}${cus(k)}`}
+function build(){const s=eff(St[m]),mu=m[0]=='m',adv=m[1]=='a',A=k=>s[k]||[],T=k=>(s[k]||'').trim();
 const sp=[mu?['instrumental']:[],A('genre'),T('sub'),s.era||'',A('mood'),s.tempo||'',T('bpm')?T('bpm')+' BPM':'',s.key||'',!mu&&s.lang?'sung in '+s.lang:'',s.vocal||s.vocalL||'',A('vtone'),A('vfx'),A('inst'),A('instL'),A('instA'),T('instF'),A('prod')].flat().filter(Boolean);const st=sp.join(', '),stZ=sp.map(zo).join('、');
 const secs=adv?A('secs'):(s.tpl||s.tplL||'Intro/Verse/Chorus/Verse/Chorus/Outro').split('/');
 const nm={};T('notes').split('\n').forEach(l=>{const i=l.search(/[:：]/);if(i>0)nm[l.slice(0,i).trim().toLowerCase()]=l.slice(i+1).trim()});
@@ -119,7 +119,12 @@ const w=[s.weird&&'Weirdness '+s.weird,s.infl&&'Style Influence '+s.infl].filter
 const ai=`請以「${T('title')||'(主題)'}」為主題,用${s.lang?zo(s.lang):'國語'}寫一首${A('genre').map(zo).join('/')||'流行'}歌曲歌詞。情緒:${A('mood').map(zo).join('、')||'自然'}。內容/關鍵詞:${T('story')||'(自由發揮)'}。結構依序為:${secs.map(zo).join(' → ')}。請用 [Verse]、[Chorus] 等 Suno meta tags 標示段落,每行 6–12 字、副歌押韻好記,並只輸出歌詞。`;
 const aiE=`Write the lyrics of a ${A('genre').join('/')||'pop'} song titled "${T('title')||'(topic)'}" in ${s.lang||'Mandarin'}. Mood: ${A('mood').join(', ')||'natural'}. Story/keywords: ${T('story')||'(free choice)'}. Song structure in order: ${secs.join(' → ')}. Label each section with Suno meta tags such as [Verse] and [Chorus], keep lines around 6–12 syllables, make the chorus rhyme and be easy to remember, and output the lyrics only.`;
 return {title:T('title'),st,stZ,ly:ly.join('\n'),lz:lz.join('\n'),ex:T('excl'),w,ai,aiE}}
-const TB={lb:['o2','o6'],mb:['o2','o3'],la:['o2','o6'],ma:['o2','o3']},LG={},TC={},PD={};
+const TB={lb:['o2','o6'],mb:['o2','o3'],la:['o2','o6'],ma:['o2','o3']},LG={},TC={},PD={},CO={};
+function eff(s){const r={...s};for(const k in F){const f=F[k];if(!'smd'.includes(f.t))continue;const c=(s[k+'~']||'').trim();if(!c)continue;
+if(f.t=='m')r[k]=[...(s[k]||[]),...c.split(/[,、,\n]+/).map(x=>x.trim()).filter(Boolean)];
+else r[k]=(k=='tpl'||k=='tplL')?c.replace(/[,、,→]+/g,'/'):c}return r}
+function cus(k){const f=F[k];if(!'smd'.includes(f.t))return'';const v=(St[m][k+'~']||'').trim(),open=CO[m+k]||v;
+return `<div class="chips" style="margin-top:8px"><button class="chip${open?' on':''}" data-cus="${k}">✏️ 自訂</button></div>`+(open?`<input style="margin-top:8px" data-i="${k}~" placeholder="${k=='tpl'||k=='tplL'?'以 / 分隔段落,例如 Intro/Verse/Chorus':f.t=='m'?'輸入自訂內容,多個以逗號分隔':'輸入自訂內容'}" value="${esc(St[m][k+'~']||'')}">`:'')}
 const hasZh=t=>/[\u4e00-\u9fff]/.test(t);
 function box(id,t,txt,lim,note,btns){const n=txt.length;return `<div class="ob"><div class="oh">${t}<span>${note||''}</span>${lim?`<span class="${n>lim?'bad':''}" style="margin:0 10px 0 0">${n}/${lim}</span>`:''}${btns||''}<button class="btn s" data-c="${id}">複製</button></div><textarea id="${id}" readonly>${esc(txt)}</textarea></div>`}
 function tbox(id,t,zh,en,lim,note){if(!(TB[m]||[]).includes(id))return box(id,t,en,lim,note);
@@ -140,13 +145,14 @@ const last=p==M_.s.length-1;
 $('pan').innerHTML=`<h2>${p+1} ${s.n}</h2><p class="sub">${s.d}</p>${last?output():s.f.map(field).join('')}<div class="nav">${p?'<button class="btn" data-go="-1">← 上一步</button>':''}<span class="sp"></span><button class="btn" data-reset="1">重設</button>${last?'':'<button class="btn p" data-go="1">下一步 →</button>'}</div>`}
 document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
 if(d.m){m=d.m;p=0;for(const x in R)delete R[x]}else if(d.p)p=+d.p;else if(d.go)p+=+d.go;
-else if(d.reset){if(!confirm('清除此模式所有內容?'))return;St[m]={}}
+else if(d.reset){if(!confirm('清除此模式所有內容?'))return;St[m]={};for(const x in CO)if(x.startsWith(m))delete CO[x]}
 else if(d.tr){LG[m+d.b]=d.tr;render();if(d.tr=='en')autoTr(d.b);return}
+else if(d.cus){const key=m+d.cus;if(CO[key]||(St[m][d.cus+'~']||'').trim()){CO[key]=false;St[m][d.cus+'~']=''}else CO[key]=true;render();const i=document.querySelector(`[data-i="${d.cus}~"]`);if(i)i.focus();return}
 else if(d.sk){const k=d.sk;if(d.rr)R[k]=shuffle(k);else if(k=='title')St[m].title=d.pk;else{const c=(St[m].story||'').trim();if(!c.split('、').includes(d.pk))St[m].story=c?c+'、'+d.pk:d.pk}}
 else if(d.k){const f=F[d.k],S_=St[m];if(f.t=='m'){const a=S_[d.k]||[],i=a.indexOf(d.v);i<0?a.push(d.v):a.splice(i,1);S_[d.k]=a}else S_[d.k]=S_[d.k]==d.v?'':d.v}
 else if(d.c){const x=$(d.c);x.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}try{navigator.clipboard.writeText(x.value);ok=true}catch(_){}
 t.textContent=ok?'已複製 ✓':'請手動複製';setTimeout(()=>t.textContent='複製',1400);return}
-else return;render();scrollTo(0,0)});
+else return;render();if(d.m||d.p||d.go)scrollTo(0,0)});
 document.addEventListener('input',e=>{const k=e.target.dataset.i;if(k)St[m][k]=e.target.value});
 render();
 </script></body></html>
