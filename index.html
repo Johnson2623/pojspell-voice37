@@ -193,7 +193,7 @@ try{const sm=window.claude&&await claude.use('sample');if(!sm)throw 0;const r=aw
 delete PD[key];render()}
 function themeBox(){return `<div class="ob"><div class="oh">主題 Theme<span>與「1 構想」的主題同步,可直接修改</span><button class="btn s" data-c="o7">複製</button></div><textarea id="o7" data-i="story" rows="2" placeholder="輸入歌曲主題,例:異地戀的思念">${esc(St[m].story||'')}</textarea></div>`}
 function output(){const o=build(),mu=m[0]=='m';
-return box('o1','歌名 Song Title',o.title)+((m=='lb'||m=='la')?themeBox():'')+tbox('o2','風格 Style of Music',o.stZ,o.st,1000,'v4.5+ 上限 1000 字元')+((m=='lb'||m=='la')?'':tbox('o3',mu?'結構標籤 Lyrics(純音樂請開啟 Instrumental)':'歌詞 Lyrics',o.lz,o.ly))+(o.ex?box('o4','排除風格 Exclude Styles',o.ex):'')+(o.w?box('o5','滑桿建議 Sliders',o.w):'')+(mu?'':tbox('o6','請 AI 代寫歌詞的指令',o.ai,o.aiE,0,'<span style="color:var(--ac)">貼給 ChatGPT, Gemini, Grok, Claude 等 AI</span>'))}
+return box('o1','歌名 Song Title',o.title)+tbox('o2','風格 Style of Music',o.stZ,o.st,1000,'v4.5+ 上限 1000 字元')+((m=='lb'||m=='la')?'':tbox('o3',mu?'結構標籤 Lyrics(純音樂請開啟 Instrumental)':'歌詞 Lyrics',o.lz,o.ly))+(o.ex?box('o4','排除風格 Exclude Styles',o.ex):'')+(o.w?box('o5','滑桿建議 Sliders',o.w):'')+(mu?'':tbox('o6','請 AI 代寫歌詞的指令',o.ai,o.aiE,0,'<span style="color:var(--ac)">貼給 ChatGPT, Gemini, Grok, Claude 等 AI</span>'))}
 function render(){const M_=M[m],s=M_.s[p];
 $('tabs').innerHTML=Object.entries(M).map(([k,v])=>`<button class="tab${k==m?' on':''}" data-m="${k}">${v.n}</button>`).join('');
 $('pg').style.width=((p+1)/M_.s.length*100)+'%';
