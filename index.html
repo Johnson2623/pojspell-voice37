@@ -128,9 +128,9 @@ const zo=e=>ZH[e]||(e=='instrumental'?'純音樂':(/^sung in (.+)$/.test(e)?'以
 const S=(n,d,f)=>({n,d,f});
 const M={
 lb:{n:'含歌詞初階',s:[S('構想','先決定用途、主題故事與歌名;曲風、人聲、歌詞留到後面步驟設定。',['idea']),S('曲風情緒','選擇曲風、情緒與速度。',['genre','mood','tempo']),S('人聲樂器','決定誰唱、用什麼樂器。',['vocalL','instL']),S('歌詞結構','貼上歌詞或使用骨架。',['tplL','lyrics']),S('輸出','複製到 Suno 對應欄位。',[])]},
-mb:{n:'僅音樂初階',s:[S('構想','描述這首純音樂的用途與畫面。',['title','story']),S('曲風情緒','選擇曲風、情緒與速度。',['genre','mood','tempo']),S('樂器質感','挑選樂器與整體質感。',['inst','prod']),S('結構','選擇曲式。',['tpl']),S('輸出','複製到 Suno 對應欄位。',[])]},
+mb:{n:'純音樂初階',s:[S('構想','描述這首純音樂的用途與畫面。',['title','story']),S('曲風情緒','選擇曲風、情緒與速度。',['genre','mood','tempo']),S('樂器質感','挑選樂器與整體質感。',['inst','prod']),S('結構','選擇曲式。',['tpl']),S('輸出','複製到 Suno 對應欄位。',[])]},
 la:{n:'含歌詞高階',s:[]},
-ma:{n:'僅音樂高階',s:[S('構想','先選專業預設模板一次帶入整套設定,或自行填寫主題與畫面。',['preset','title','story']),S('曲風架構','精準定義曲風、年代、速度、拍號與調性(可設定結束轉調)。',['genre','sub','era','mood','tempo','bpm','key','meter','endKey']),S('樂器分層','分層指定主奏、和聲、低音、打擊樂與演奏技巧。',['instA','instF','lead','harmony','bass','perc','tech']),S('段落編排','五段情緒曲線(前奏→主題→發展→高潮→尾奏),亦可改用下方自訂段落。',['seg0','seg1','seg2','seg3','seg4','energy','endS','secs','notes']),S('混音製作','整體製作質感、錄音空間與母帶目標。',['prod','space','stereo','mix']),S('排除參數','排除風格與滑桿建議;人聲類元素(vocals, singing…)會自動排除。',['excl','weird','infl']),S('輸出','複製到 Suno 對應欄位。',[])]}};
+ma:{n:'純音樂高階',s:[S('構想','先選專業預設模板一次帶入整套設定,或自行填寫主題與畫面。',['preset','title','story']),S('曲風架構','精準定義曲風、年代、速度、拍號與調性(可設定結束轉調)。',['genre','sub','era','mood','tempo','bpm','key','meter','endKey']),S('樂器分層','分層指定主奏、和聲、低音、打擊樂與演奏技巧。',['instA','instF','lead','harmony','bass','perc','tech']),S('段落編排','五段情緒曲線(前奏→主題→發展→高潮→尾奏),亦可改用下方自訂段落。',['seg0','seg1','seg2','seg3','seg4','energy','endS','secs','notes']),S('混音製作','整體製作質感、錄音空間與母帶目標。',['prod','space','stereo','mix']),S('排除參數','排除風格與滑桿建議;人聲類元素(vocals, singing…)會自動排除。',['excl','weird','infl']),S('輸出','複製到 Suno 對應欄位。',[])]}};
 M.la.s=M.lb.s.map((x,i)=>i?x:{...x,f:['srcin',...x.f]});
 let SRCMSG='';
 const ldS=u=>new Promise((ok,no)=>{const e=document.createElement('script');e.src=u;e.onload=ok;e.onerror=no;document.head.appendChild(e)});
